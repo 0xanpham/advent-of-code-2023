@@ -8,13 +8,6 @@ import (
 	"strings"
 )
 
-const (
-	DOT        = "DOT"
-	NUMBER     = "NUMBER"
-	SYMBOL     = "SYMBOL"
-	STAR       = "STAR"
-)
-
 func totalPoint(data string) int {
 	winningNumbersStr := strings.Split(data, " | ")[0]
 	numbersStr := strings.Split(data, " | ")[1]
