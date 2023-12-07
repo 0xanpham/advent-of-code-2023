@@ -89,11 +89,64 @@ func compare(firstHand string, secondHand string) int {
 	return firstHandType - secondHandType
 }
 
+func handTypePart2(hand string) int {
+	maxType := HIGH_CARD
+	for _, char := range []string{"A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2"} {
+		maxType = max(maxType, handType(strings.Replace(hand, "J", char, -1)))
+	}
+	return maxType
+}
+
+func comparePart2(firstHand string, secondHand string) int {
+	firstHandType := handTypePart2(firstHand)
+	secondHandType := handTypePart2(secondHand)
+	
+	value := make(map[byte]int)
+	value['A'] = 14
+	value['K'] = 13
+	value['Q'] = 12
+	value['T'] = 10
+	value['9'] = 9
+	value['8'] = 8
+	value['7'] = 7
+	value['6'] = 6
+	value['5'] = 5
+	value['4'] = 4
+	value['3'] = 3
+	value['2'] = 2
+	value['J'] = 1
+
+	if firstHandType == secondHandType {
+		for i := range firstHand {
+			if value[firstHand[i]] != value[secondHand[i]] {
+				return value[firstHand[i]] - value[secondHand[i]]
+			}
+		}
+		return 0
+	}
+	return firstHandType - secondHandType
+}
+
 func insertionSort(handBidPairs [][2]string) {
 	for i := 0; i < len(handBidPairs); i += 1 {
 		pivot := handBidPairs[i]
 		for j := i - 1; j >= 0; j -= 1 {
 			if compare(handBidPairs[j][0], pivot[0]) < 0 {
+				handBidPairs[j+1] = pivot
+				break
+			}
+			temp := handBidPairs[j]
+			handBidPairs[j] = handBidPairs[j+1]
+			handBidPairs[j+1] = temp
+		}
+	}
+}
+
+func insertionSortPart2(handBidPairs [][2]string) {
+	for i := 0; i < len(handBidPairs); i += 1 {
+		pivot := handBidPairs[i]
+		for j := i - 1; j >= 0; j -= 1 {
+			if comparePart2(handBidPairs[j][0], pivot[0]) < 0 {
 				handBidPairs[j+1] = pivot
 				break
 			}
@@ -113,15 +166,28 @@ func main() {
 
 	stringContent := string(content)
 	inputs := strings.Split(stringContent, "\n")
+	
 	var handBidPairs [][2]string
+	var handBidPairsPart2 [][2]string
+	
 	for _, input := range inputs {
 		handBidPairs = append(handBidPairs, [2]string(strings.Split(input, " ")))
+		handBidPairsPart2 = append(handBidPairsPart2, [2]string(strings.Split(input, " ")))
 	}
-	insertionSort(handBidPairs)
+	
 	resultPart1 := 0
+	insertionSort(handBidPairs)
 	for i, pair := range handBidPairs {
 		bid, _ := strconv.Atoi(pair[1])
 		resultPart1 += (i + 1) * bid
 	}
 	fmt.Printf("Part 1 Result: %v\n", resultPart1)
+
+	resultPart2 := 0
+	insertionSortPart2(handBidPairsPart2)
+	for i, pair := range handBidPairsPart2 {
+		bid, _ := strconv.Atoi(pair[1])
+		resultPart2 += (i + 1) * bid
+	}
+	fmt.Printf("Part 2 Result: %v\n", resultPart2)
 }
