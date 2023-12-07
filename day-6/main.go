@@ -32,5 +32,16 @@ func main() {
 		}
 		resultPart1 *= num
 	}
+
+	time, _ := strconv.Atoi(strings.Split(strings.Replace(inputs[0], " ", "", -1), ":")[1])
+	distance, _ := strconv.Atoi(strings.Split(strings.Replace(inputs[1], " ", "", -1), ":")[1])
+	resultPart2 := 0
+	for j := 0; j <= time; j += 1 {
+		if j * (time - j) > distance {
+			resultPart2 += 1 
+		}
+	}
+
 	fmt.Printf("Part 1 Result: %v\n", resultPart1)
+	fmt.Printf("Part 2 Result: %v\n", resultPart2)
 }
